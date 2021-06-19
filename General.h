@@ -1,9 +1,24 @@
 #include<iostream>
 #include<vector>
 #include<ctime>
+#include<string>
+#include<fstream>
 #include"Textable.h"
 
 using namespace std;
+
+struct TaxiInfo{
+	int id;
+	string plate;
+	string engine;
+	int year;
+	string model;
+	string category;
+	string driver;
+	string dui;
+	string socialNumber;
+	string phoneNumber;
+};
 
 struct Trip {
 	int id;
@@ -15,6 +30,50 @@ struct TaxiQueue {
 	int id;
 	string category;
 };
+
+vector<TaxiInfo> loadDataFromTxtFile(){
+	string line;
+	TaxiInfo ingreso;
+	vector<TaxiInfo> taxisInfo;
+	ifstream myfile ("example.txt");
+	
+	if (myfile.is_open()) {
+		
+		while (true) {
+		    getline(myfile,line);
+		      	if(line.length()!=0) {
+			      	ingreso.id= stoi(line);
+			      	getline(myfile,line);
+			      	ingreso.plate=line;
+			      	getline(myfile,line);
+			      	ingreso.engine=line;
+			      	getline(myfile,line);
+			      	ingreso.year=stoi(line);
+			      	getline(myfile,line);
+			      	ingreso.model=line;
+			      	getline(myfile,line);
+			      	ingreso.category=line;
+			      	getline(myfile,line);
+			      	ingreso.driver=line;
+			      	getline(myfile,line);
+			      	ingreso.dui=line;
+			      	getline(myfile,line);
+			      	ingreso.socialNumber=line;
+			      	getline(myfile,line);
+			      	ingreso.phoneNumber=line;
+			      	taxisInfo.push_back(ingreso);
+			  	}
+				  	else {
+				  		break;
+				   }
+		}
+		    myfile.close();
+  		}
+  			else{
+  			cout << "Unable to open file"<<endl; 	
+  		}
+  		return taxisInfo;
+}
 
 
 string getTaxi(vector<string> categories, vector<int> taxis, int id){

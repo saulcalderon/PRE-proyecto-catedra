@@ -26,6 +26,8 @@ int main(){
 	float cost;
 	int year;
 	cout<<"Taxi queue system\t\n";
+	vector<TaxiInfo> taxisInfo;
+	TaxiInfo ingresoTaxi;
 	vector<int> taxis;
 	vector<string> drivers;
 	vector<string> plates;
@@ -40,8 +42,24 @@ int main(){
 	vector<Trip> trips;
 	bool checkValue;
 	int count;
+	
+	taxisInfo = loadDataFromTxtFile();
+		for(int i=0; i< taxisInfo.size() ;i++) {
+			cout<<taxisInfo[i].id<<endl;
+			cout<<taxisInfo[i].plate<<endl;
+			cout<<taxisInfo[i].engine<<endl;
+			cout<<taxisInfo[i].year<<endl;
+			cout<<taxisInfo[i].model<<endl;
+			cout<<taxisInfo[i].category<<endl;
+			cout<<taxisInfo[i].driver<<endl;
+			cout<<taxisInfo[i].dui<<endl;
+			cout<<taxisInfo[i].socialNumber<<endl;
+			cout<<taxisInfo[i].phoneNumber<<endl;
+		}
+
+	
 	do{
-		system("cls");
+//		system("cls");
 		cout<<"Main menu options:\n\n"<<endl;
 		cout<<"\t\t1. Add New Taxi to standby queue"<<endl;
 		cout<<"\t\t2. Check for actual data"<<endl;
@@ -51,6 +69,31 @@ int main(){
 		cout<<"\t\t6. Exit program"<<endl<<endl;
 		cout<<"Please, input your option: ";
 		cin>>option;
+		
+		taxis.clear();
+		drivers.clear();
+		plates.clear();
+		engines.clear();
+		models.clear();
+		duis.clear();
+		socialNumbers.clear();
+		phoneNumbers.clear();
+		categories.clear();
+		years.clear();
+		
+		for(int i=0; i<0 ;i++) {
+			taxis.push_back(taxisInfo[i].id);
+			drivers.push_back(taxisInfo[i].driver);
+			plates.push_back(taxisInfo[i].plate);
+			engines.push_back(taxisInfo[i].engine);
+			models.push_back(taxisInfo[i].model);
+			duis.push_back(taxisInfo[i].dui);
+			socialNumbers.push_back(taxisInfo[i].socialNumber);
+			phoneNumbers.push_back(taxisInfo[i].phoneNumber);
+			categories.push_back(taxisInfo[i].category);
+			years.push_back(taxisInfo[i].year);
+		}
+		
 		switch(option){
 			case 1:
 				do{
@@ -67,32 +110,38 @@ int main(){
 					}
 				
 				}while(checkValue || checkForItemInt(taxis, id));
-				taxis.push_back(id);
+				ingresoTaxi.id = id;
+//				taxis.push_back(id);
 				
 				do{
 					cout<<"Driver Name: ";
 					cin.ignore();
 					getline(cin,driverName);
+					
 				}while(maskForOnlyCharacters(driverName) || checkForItemInt(drivers, driverName));
-				drivers.push_back(driverName);
+				ingresoTaxi.driver = driverName;
+//				drivers.push_back(driverName);
 				
 				do{
 					cout<<"Plate Number: ";
 					getline(cin,plateNumber);
 				}while(maskForCarPlates(plateNumber) || checkForItemInt(plates, plateNumber));
-				plates.push_back(plateNumber);
+				ingresoTaxi.plate = plateNumber;
+//				plates.push_back(plateNumber);
 				
 				do{
 					cout<<"Engine Number: ";
 					getline(cin,engineNumber);
 				}while(maskForEngineNumber(engineNumber) || checkForItemInt(engines, engineNumber));
-				engines.push_back(engineNumber);
+				ingresoTaxi.engine = engineNumber;
+//				engines.push_back(engineNumber);
 				
 				do{
 					cout<<"Model: ";
 					getline(cin, model);
 				}while(maskForModel(model));
-				models.push_back(model);
+				ingresoTaxi.model = model;
+//				models.push_back(model);
 
 				do
 				{
@@ -110,7 +159,8 @@ int main(){
 					}
 					
 				}while(checkValue || maskForYear(year)) ;
-				years.push_back(year);
+				ingresoTaxi.year = year;
+//				years.push_back(year);
 				
 				if(year >= 2015){
 					
@@ -145,23 +195,37 @@ int main(){
 					cout<<"DUI: ";
 					getline(cin, dui);
 				}while(maskForDui(dui) || checkForItemInt(duis, dui));
-				duis.push_back(dui);
+				ingresoTaxi.dui = dui;
+//				duis.push_back(dui);
 				
 				do{
 					cout<<"Social Number: ";
 					getline(cin, socialNumber);
 				}while(maskForSocialNumber(socialNumber) || checkForItemInt(socialNumbers, socialNumber));
-				socialNumbers.push_back(socialNumber);
+				ingresoTaxi.socialNumber = socialNumber;
+//				socialNumbers.push_back(socialNumber);
 				
 				do{
 					cout<<"Phone number: ";
 					getline(cin, phoneNumber);
 				}while(maskForPhoneNumber(phoneNumber) || checkForItemInt(phoneNumbers, phoneNumber));
-				phoneNumbers.push_back(phoneNumber);
+				ingresoTaxi.phoneNumber = phoneNumber;
+//				phoneNumbers.push_back(phoneNumber);
 				
+				ingresoTaxi.category = category;
+				taxisInfo.push_back(ingresoTaxi);
 				categories.push_back(category);
 				taxisQueue.push_back({id, category});
 				category = "";
+				
+				
+//				int hachy =  TaxiInfo.id;
+//				typedef TaxiInfo hachy;
+//				for(int i = 0; i < taxisInfo.size(); i++){
+//					
+//					cout<<"taxi Id in struct: "<<taxisInfo[i].id<<endl;
+//				}
+
 				
 			break;
 			case 2:		
