@@ -21,6 +21,7 @@ struct Trip {
     int id;
     string pickUpAddress, destinyAddress;
     float cost;
+    string date, completed;
 };
 
 struct TaxiQueue {
@@ -29,40 +30,122 @@ struct TaxiQueue {
 };
 
 void saveTripsInTxtFile(Trip trip) {
-	ofstream myfile ("TRANSACTION_LOG.txt", ios::app);
-	if (myfile.is_open()) {
-		myfile << trip.id<<"\n";
-		myfile << trip.pickUpAddress<<"\n";
-		myfile << trip.destinyAddress<<"\n";
-		myfile << trip.cost<<"\n";
-		myfile.close();
-	} else cout << "Unable to open file";
+    ofstream myfile("TRANSACTION_LOG.txt", ios::app);
+    if (myfile.is_open()) {
+        myfile << trip.id << "\n";
+        myfile << trip.pickUpAddress << "\n";
+        myfile << trip.destinyAddress << "\n";
+        myfile << trip.cost << "\n";
+        myfile << trip.date << "\n";
+        myfile << trip.completed << "\n";
+        myfile.close();
+    } else cout << "Unable to open file";
+}
+
+void deleteFromQueueInTxtFile(int idToDelete) {
+    string line;
+
+    fstream myfile("TAXIS_QUEUE.txt", ios:: in );
+    fstream temporal("temp_queue.txt", ios::out);
+    if (myfile.is_open()) {
+
+        while (true) {
+            getline(myfile, line);
+            if (line.length() != 0) {
+                if (line != to_string(idToDelete)) {
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                } else {
+                    getline(myfile, line);
+                }
+            } else {
+                myfile.close();
+                break;
+            }
+        }
+
+        temporal.close();
+        myfile.close();
+        remove("TAXIS_QUEUE.txt");
+        rename("temp_queue.txt", "TAXIS_QUEUE.txt");
+
+    } else cout << "Unable to open file";
+}
+
+void updateTripCompletedInTxtFile(int idToUpdate) {
+    string line;
+
+    fstream myfile("TRANSACTION_LOG.txt", ios:: in );
+    fstream temporal("temp_transaction.txt", ios::out);
+    if (myfile.is_open()) {
+
+        while (true) {
+            getline(myfile, line);
+            if (line.length() != 0) {
+                if (line != to_string(idToUpdate)) {
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                } else {
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                    getline(myfile, line);
+                    temporal << line << "\n";
+                    temporal << "true" << "\n";
+                    getline(myfile, line);
+                }
+            } else {
+                myfile.close();
+                break;
+            }
+        }
+
+        temporal.close();
+        myfile.close();
+        remove("TRANSACTION_LOG.txt");
+        rename("temp_transaction.txt", "TRANSACTION_LOG.txt");
+
+    } else cout << "Unable to open file";
 }
 
 void saveQueueInTxtFile(TaxiQueue taxiQueue) {
-	ofstream myfile ("TAXIS_QUEUE.txt", ios::app);
-	if (myfile.is_open()) {
-		myfile << taxiQueue.id<<"\n";
-		myfile << taxiQueue.category<<"\n";
-		myfile.close();
-	} else cout << "Unable to open file";
+    ofstream myfile("TAXIS_QUEUE.txt", ios::app);
+    if (myfile.is_open()) {
+        myfile << taxiQueue.id << "\n";
+        myfile << taxiQueue.category << "\n";
+        myfile.close();
+    } else cout << "Unable to open file";
 }
 
 void saveTaxiInfoInTxtFile(TaxiInfo taxisInfo) {
-	ofstream myfile ("CARS_STORAGE.txt", ios::app);
-	if (myfile.is_open()) {
-		myfile << taxisInfo.id<<"\n";
-		myfile << taxisInfo.plate<<"\n";
-		myfile << taxisInfo.engine<<"\n";
-		myfile << taxisInfo.year<<"\n";
-		myfile << taxisInfo.model<<"\n";
-		myfile << taxisInfo.category<<"\n";
-		myfile << taxisInfo.driver<<"\n";
-		myfile << taxisInfo.dui<<"\n";
-		myfile << taxisInfo.socialNumber<<"\n";
-		myfile << taxisInfo.phoneNumber<<"\n";		
-		myfile.close();
-	} else cout << "Unable to open file";
+    ofstream myfile("CARS_STORAGE.txt", ios::app);
+    if (myfile.is_open()) {
+        myfile << taxisInfo.id << "\n";
+        myfile << taxisInfo.plate << "\n";
+        myfile << taxisInfo.engine << "\n";
+        myfile << taxisInfo.year << "\n";
+        myfile << taxisInfo.model << "\n";
+        myfile << taxisInfo.category << "\n";
+        myfile << taxisInfo.driver << "\n";
+        myfile << taxisInfo.dui << "\n";
+        myfile << taxisInfo.socialNumber << "\n";
+        myfile << taxisInfo.phoneNumber << "\n";
+        myfile.close();
+    } else cout << "Unable to open file";
 }
 
 vector < Trip > loadTripsDataFromTxtFile() {
@@ -83,6 +166,10 @@ vector < Trip > loadTripsDataFromTxtFile() {
                 entry.destinyAddress = line;
                 getline(myfile, line);
                 entry.cost = stof(line);
+                getline(myfile, line);
+                entry.date = line;
+                getline(myfile, line);
+                entry.completed = line;
                 trips.push_back(entry);
             } else {
                 break;
@@ -90,12 +177,11 @@ vector < Trip > loadTripsDataFromTxtFile() {
         }
         myfile.close();
     } else {
-    	ofstream myfile("TRANSACTION_LOG.txt");
-    	myfile.close();
-//        cout << "Unable to open file" << endl;
+        ofstream myfile("TRANSACTION_LOG.txt");
+        myfile.close();
     }
-    
-		return trips;	
+
+    return trips;
 }
 
 vector < TaxiQueue > loadQueueDataFromTxtFile() {
@@ -119,12 +205,11 @@ vector < TaxiQueue > loadQueueDataFromTxtFile() {
         }
         myfile.close();
     } else {
-    	ofstream myfile("TAXIS_QUEUE.txt");
-    	myfile.close();
-//        cout << "Unable to open file" << endl;
+        ofstream myfile("TAXIS_QUEUE.txt");
+        myfile.close();
     }
-    
-		return taxiQueue;	
+
+    return taxiQueue;
 }
 
 vector < TaxiInfo > loadTaxisInfoDataFromTxtFile() {
@@ -164,18 +249,17 @@ vector < TaxiInfo > loadTaxisInfoDataFromTxtFile() {
         }
         myfile.close();
     } else {
-    	ofstream myfile("CARS_STORAGE.txt");
-    	myfile.close();
-//        cout << "Unable to open file" << endl;
+        ofstream myfile("CARS_STORAGE.txt");
+        myfile.close();
     }
-    
-		return taxisInfo;	
+
+    return taxisInfo;
 }
 
-string getTaxi(vector < string > categories, vector < int > taxis, int id) {
+TaxiInfo getTaxi(vector < TaxiInfo > taxis, int id) {
     for (int i = 0; i < taxis.size(); i++) {
-        if (taxis.at(i) == id) {
-            return categories.at(i);
+        if (taxis.at(i).id == id) {
+            return taxis[i];
         }
     }
 }
@@ -342,6 +426,8 @@ void printTableForTaxisOnRoute(vector < Trip > trips) {
     t.add("Pickup address");
     t.add("Destiny address");
     t.add("Trip cost");
+    t.add("Date");
+    t.add("Completed");
     t.endOfRow();
     for (int i = 0; i < trips.size(); i++) {
         t.add(to_string(i));
@@ -349,6 +435,8 @@ void printTableForTaxisOnRoute(vector < Trip > trips) {
         t.add(trips.at(i).pickUpAddress);
         t.add(trips.at(i).destinyAddress);
         t.add(to_string(trips.at(i).cost));
+        t.add(trips.at(i).date);
+        t.add(trips.at(i).completed);
         t.endOfRow();
     }
     t.setAlignment(4, TextTable::Alignment::RIGHT);
